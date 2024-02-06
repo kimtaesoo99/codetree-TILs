@@ -19,7 +19,7 @@ public class Main {
     private static final int[] by = {1, 1, -1, -1};
     private static final int[] bx = {1, -1, 1, -1};
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken()); // 격자 크기
@@ -69,8 +69,8 @@ public class Main {
     private static void breeding() {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                int count = 0;
                 if (map[i][j] > 0) {
+                    int count = 0;
                     for (int k = 0; k < 4; k++) {
                         int moveY = i + dy[k];
                         int moveX = j + dx[k];
@@ -94,30 +94,36 @@ public class Main {
         }
     }
 
-    private static void findBan(int k,int c) {
+    private static void findBan(int k, int c) {
         int max = 0;
         int resultY = 0;
         int resultX = 0;
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (ban[i][j] == 0 && map[i][j] >= 0) {
-                    int sum = map[i][j];
+                if (ban[i][j] == 0 && map[i][j] > 0) {
+                    int sum = map[i][j]; // 탐색 시작점
                     for (int l = 0; l < 4; l++) {
-                        int moveY = i + by[l];
-                        int moveX = j + bx[l];
+                        int moveY = i;
+                        int moveX = j;
 
                         for (int m = 0; m < k; m++) {
-                            if (!isCorrectIndex(moveY, moveX) || ban[moveY][moveX] > 0 || map[moveY][moveX] == -1) {
+                            moveY += by[l];
+                            moveX += bx[l];
+                            if (!isCorrectIndex(moveY, moveX) || map[moveY][moveX] <= 0) {
                                 break;
                             }
                             sum += map[moveY][moveX];
-                            moveY += by[l];
-                            moveX += bx[l];
                         }
                     }
                     if (max < sum) {
                         max = sum;
+                        resultY = i;
+                        resultX = j;
+                    } else if (max == sum && resultX > j) {
+                        resultY = i;
+                        resultX = j;
+                    } else if (max == sum && resultX == j && resultY > i) {
                         resultY = i;
                         resultX = j;
                     }
@@ -129,17 +135,21 @@ public class Main {
         ban[resultY][resultX] = c;
 
         for (int l = 0; l < 4; l++) {
-            int moveY = resultY + by[l];
-            int moveX = resultX + bx[l];
+            int moveY = resultY;
+            int moveX = resultX;
 
             for (int m = 0; m < k; m++) {
-                if (!isCorrectIndex(moveY, moveX) || ban[moveY][moveX] > 1 || map[moveY][moveX] == -1) {
+                moveY += by[l];
+                moveX += bx[l];
+                if (!isCorrectIndex(moveY, moveX) || map[moveY][moveX] == -1) {
+                    break;
+                }
+                if (map[moveY][moveX] == 0) {
+                    ban[moveY][moveX] = c;
                     break;
                 }
                 map[moveY][moveX] = 0;
                 ban[moveY][moveX] = c;
-                moveY += by[l];
-                moveX += bx[l];
             }
         }
 
