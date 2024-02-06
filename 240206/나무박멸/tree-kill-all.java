@@ -108,7 +108,7 @@ public class Main {
                         int moveX = j + bx[l];
 
                         for (int m = 0; m < k; m++) {
-                            if (!isCorrectIndex(moveY, moveX) || ban[moveY][moveX] > 1 || map[moveY][moveX] == -1) {
+                            if (!isCorrectIndex(moveY, moveX) || ban[moveY][moveX] > 0 || map[moveY][moveX] == -1) {
                                 break;
                             }
                             sum += map[moveY][moveX];
